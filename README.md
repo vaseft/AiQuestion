@@ -86,13 +86,47 @@ dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
 dsh plugin --profile web add dsh-aiquestion
 ```
 
-桌面端（NewMax / DeepSeek Harness Desktop）请使用应用自带的 CLI 入口，例如：
+桌面端（NewMax / DeepSeek Harness Desktop）使用应用自带的 CLI，通用布局为
+`<安装目录>/resources/runtime/cli/bin/dsh.cmd`：
 
 ```sh
-"<桌面安装目录>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add link:E:/dsh/dsh/AiQuestion
+"<安装目录>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add link:E:/dsh/dsh/AiQuestion
 ```
 
+> ⚠️ 该路径是 DSH 桌面版的**通用布局，并非所有发行版都带独立 CLI**。例如打包版
+> NewMax 通常**不暴露** `dsh` 可执行文件（本仓库作者环境经核对：该路径不存在，
+> `~/.newmax/bin` 下只有 `claude.exe`）。如果这条路径在你机器上不存在，请改用下面的
+> 「手动安装」。
+
 安装后**重启**对应的 `dsh` 进程（插件随 profile 启动加载）。
+
+### 手动安装（没有 `dsh` CLI 时）
+
+编辑目标 profile 目录 `$DSH_HOME/profiles/<profile>/`（Windows 下通常是
+`C:\Users\<你>\.dsh\profiles\web\` 或 `...\desktop\`）：
+
+1. 在 `package.json` 中登记依赖与 bundle：
+
+   ```json
+   {
+     "dependencies": { "dsh-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
+     "dsh": { "profile": { "bundles": ["dsh-aiquestion"] } }
+   }
+   ```
+
+2. 或在同目录的 `cordis.patch.yml` 中直接挂载：
+
+   ```yaml
+   - insert:
+       - id: dsh-aiquestion
+         name: dsh-aiquestion
+   ```
+
+3. 让 profile 的包管理器安装依赖（目录内自带 `pnpm-lock.yaml` / `pnpm-workspace.yaml`，
+   通常是 `pnpm install`），然后重启宿主应用。
+
+> 手动安装细节随发行版而异；本项目在打包版 NewMax 上**未做端到端加载验证**，
+> 上述步骤均按标准 DSH profile 结构给出。
 
 > 旁路请求需要一个 OpenAI 兼容端点。默认使用 `https://api.deepseek.com` + `deepseek-chat`，
 > API key 从 DSH 凭据服务的 `DEEPSEEK_API_KEY`（或同名环境变量）读取；也可在配置里改 `provider`。

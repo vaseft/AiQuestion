@@ -86,13 +86,47 @@ dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
 dsh plugin --profile web add dsh-aiquestion
 ```
 
-Desktop (NewMax / DeepSeek Harness Desktop) uses the app's bundled CLI:
+Desktop (NewMax / DeepSeek Harness Desktop) uses the app's bundled CLI. Its usual
+layout is `<install>/resources/runtime/cli/bin/dsh.cmd`:
 
 ```sh
-"<desktop-install>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add link:E:/dsh/dsh/AiQuestion
+"<install>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add link:E:/dsh/dsh/AiQuestion
 ```
 
+> ⚠️ That path follows the **generic** DSH desktop layout and **not every
+> distribution ships a standalone CLI** — packaged NewMax, for instance, usually
+> exposes no `dsh` executable (verified on the author's machine: the path does not
+> exist; `~/.newmax/bin` holds only `claude.exe`). If it is absent on yours, use the
+> manual install below.
+
 Restart the corresponding `dsh` process afterwards.
+
+### Manual install (no `dsh` CLI)
+
+Edit the target profile at `$DSH_HOME/profiles/<profile>/`:
+
+1. Register the dependency and bundle in `package.json`:
+
+   ```json
+   {
+     "dependencies": { "dsh-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
+     "dsh": { "profile": { "bundles": ["dsh-aiquestion"] } }
+   }
+   ```
+
+2. Or mount it directly in that directory's `cordis.patch.yml`:
+
+   ```yaml
+   - insert:
+       - id: dsh-aiquestion
+         name: dsh-aiquestion
+   ```
+
+3. Install dependencies with the profile's package manager (a `pnpm-lock.yaml` ships
+   in the directory; typically `pnpm install`), then restart the host app.
+
+> Manual steps vary by distribution; this project has **not** been validated
+> end-to-end on packaged NewMax.
 
 > The side request needs an OpenAI-compatible endpoint. Defaults to
 > `https://api.deepseek.com` + `deepseek-chat`, with the key read from the DSH
