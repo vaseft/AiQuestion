@@ -1,23 +1,20 @@
 # AiQuestion「先问清楚再动手」
 
+[![npm version](https://img.shields.io/npm/v/dsh-plugin-aiquestion.svg?color=blue)](https://www.npmjs.com/package/dsh-plugin-aiquestion)
+[![license](https://img.shields.io/npm/l/dsh-plugin-aiquestion.svg)](LICENSE)
+
 **中文** | [English](README.en.md)
 
-> 一个 DSH（DeepSeek Harness）插件：在你把一句含糊的话丢给 AI 之后，它**不会立刻开干**，
-> 而是先向你提问、逼你说清楚——**并且以 AI 自己的判断为优先**，判断你的回答是否合理、
-> 是否有参考意义。直到 AI 彻底理解你到底要干什么，它才动手。
+> 一个 DSH（DeepSeek Harness）插件：在你把一句含糊的话丢给 AI 之后，它**不会立刻开干**， 而是先向你提问、逼你说清楚——**并且以 AI 自己的判断为优先**，判断你的回答是否合理、 是否有参考意义。直到 AI 彻底理解你到底要干什么，它才动手。
 
-> **项目缘起（作者原话）**：解决用户意义不明的 vibe code 和 wish code（笑）——在用户提出第一个问题后，
-> AI 会在需要花费较大 token 进行制作时，不断地向用户提问、询问用户的决策；而 AI 比绝大多数用户聪明，
-> 所以 AI 会以自己为优先级，判断用户的回答是否合理且有参考意义。在制作任何内容的过程中，AI 会不断
-> 决策，直到彻底理解用户到底要干什么。
+> **项目缘起（作者原话）**：解决用户意义不明的 vibe code 和 wish code（笑）——在用户提出第一个问题后， AI 会在需要花费较大 token 进行制作时，不断地向用户提问、询问用户的决策；而 AI 比绝大多数用户聪明， 所以 AI 会以自己为优先级，判断用户的回答是否合理且有参考意义。在制作任何内容的过程中，AI 会不断 决策，直到彻底理解用户到底要干什么。
 
 用来治两种病（笑）：
 
 - **vibe code** —— “我也说不清，你先写，我看着改。”
 - **wish code** —— “给我一个超厉害的 app，什么都能干。”
 
-这两种需求的共同结局是：AI 愉快地烧掉几万 token，交付了一个你并不想要的东西，然后你重来一遍。
-AiQuestion 的立场很明确：**在误解上花的每一个 token，都是浪费。**
+这两种需求的共同结局是：AI 愉快地烧掉不知道多少无用的 token，交付了一个你并不想要的东西，然后你重来一遍，死循环，不是吗，我的某个不知名朋友就是这样。 AiQuestion 的立场很明确：**在误解上花的每一个 token，都是浪费。**
 
 ---
 
@@ -37,8 +34,7 @@ AiQuestion 的立场很明确：**在误解上花的每一个 token，都是浪�
         └─ 否则 → 生成 1-4 个澄清问题，写入会话并拒绝本轮（主模型零调用）
 ```
 
-关键点：**澄清阶段主模型一次都不调用**。所有评估与裁决都由一个极小、**不带历史**的旁路请求完成，
-结果返回给程序判定。主模型只在意图真正清楚后才第一次获得执行权。
+关键点：**澄清阶段主模型一次都不调用**。所有评估与裁决都由一个极小、**不带历史**的旁路请求完成， 结果返回给程序判定。主模型只在意图真正清楚后才第一次获得执行权。
 
 ### AI 优先：不迁就用户的随口回答
 
@@ -53,9 +49,7 @@ AiQuestion 的立场很明确：**在误解上花的每一个 token，都是浪�
 
 ### 意图契约
 
-当 AI 判定意图已足够清楚，它会产出并写入一条 **【意图契约】**：目标 / 范围边界 /
-关键决策（含 AI 替你做的决定）/ 验收标准。该契约会被注入本轮的模型输入，并被要求**原样执行**，
-避免主模型再重复问一遍已经决定过的事。
+当 AI 判定意图已足够清楚，它会产出并写入一条 **【意图契约】**：目标 / 范围边界 / 关键决策（含 AI 替你做的决定）/ 验收标准。该契约会被注入本轮的模型输入，并被要求**原样执行**， 避免主模型再重复问一遍已经决定过的事。
 
 ---
 
@@ -63,21 +57,22 @@ AiQuestion 的立场很明确：**在误解上花的每一个 token，都是浪�
 
 AiQuestion 的省 token 不是“少说话”，而是**不在误解上烧钱**：
 
-| 手段 | 效果 |
-| --- | --- |
-| 评估/裁决全部走**无历史的旁路请求** | 澄清阶段主模型 **0 调用**；旁路请求只有几十~几百 token |
-| **一次问清**，换来的是不返工 | 省下的是主模型在错误方向上的整段生成，远大于旁路成本 |
-| 意图清晰的小请求**直接放行** | 闲聊、小改动**零干预、零额外开销** |
-| `workloadThreshold` 阈值门控 | 只有预估工作量达到阈值（默认 6/10）才触发澄清 |
-| **默认不发布任何工具、不注入任何提示词** | 插件对主模型的固定 token 成本为 **0** |
-| 插件停用 / `mode=never` | 完全旁路，**零消耗** |
+
+| 手段                       | 效果                                 |
+| ------------------------ | ---------------------------------- |
+| 评估/裁决全部走**无历史的旁路请求**     | 澄清阶段主模型 **0 调用**；旁路请求只有几十~几百 token |
+| **一次问清**，换来的是不返工         | 省下的是主模型在错误方向上的整段生成，远大于旁路成本         |
+| 意图清晰的小请求**直接放行**         | 闲聊、小改动**零干预、零额外开销**                |
+| `workloadThreshold` 阈值门控 | 只有预估工作量达到阈值（默认 6/10）才触发澄清          |
+| **默认不发布任何工具、不注入任何提示词**   | 插件对主模型的固定 token 成本为 **0**          |
+| 插件停用 / `mode=never`      | 完全旁路，**零消耗**                       |
+
 
 ---
 
 ## 安装
 
-AiQuestion 是一个标准 DSH 插件：`package.json` 的 `dsh.bundle.patch` 指向 `cordis.patch.yml`，
-bundle entry 的 `name` 就是 **npm 包名**。任何标准的 DSH 插件安装入口，填入下面这一行即可安装：
+AiQuestion 是一个标准 DSH 插件：`package.json` 的 `dsh.bundle.patch` 指向 `cordis.patch.yml`， bundle entry 的 `name` 就是 **npm 包名**。任何标准的 DSH 插件安装入口，填入下面这一行即可安装：
 
 ```
 dsh-plugin-aiquestion
@@ -85,10 +80,12 @@ dsh-plugin-aiquestion
 
 ### 方式一：在 DSH / NewMax 里填 npm 包名（推荐）
 
-在宿主的插件安装入口填入 `dsh-plugin-aiquestion`。安装器会从 npm 拉取本包，并写入当前 profile
-的 `dsh.profile.bundles`，重启后生效——不需要 clone 仓库，也不需要本地路径。
+在宿主的插件安装入口填入 `dsh-plugin-aiquestion`。安装器会从 npm 拉取本包，并写入当前 profile 的 `dsh.profile.bundles`，重启后生效——不需要 clone 仓库，也不需要本地路径。
 
-> 前提：本包**已发布到 npm**。仓库自带发布助手 `npm run release`，见文末「发布到 npm」。
+> ✅ 本包**已发布到 npm**：`dsh-plugin-aiquestion@1.0.0`（MIT）
+> — <https://www.npmjs.com/package/dsh-plugin-aiquestion>
+>
+> 仓库自带发布助手 `npm run release`（自检 → 登录检查 → 发布），见文末「发布到 npm」。
 
 ### 方式二：命令行
 
@@ -110,25 +107,25 @@ dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
 "<安装目录>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add dsh-plugin-aiquestion
 ```
 
-> ⚠️ 该路径是**通用布局，并非所有发行版都带独立 CLI**。打包版 NewMax 通常**不暴露**
-> `dsh` 可执行文件（作者环境经核对：该路径不存在，`~/.newmax/bin` 下只有 `claude.exe`）。
-> 属于这种情况时，请用「方式一」或下面的「手动安装」。
+> ⚠️ 该路径是**通用布局，并非所有发行版都带独立 CLI**。打包版 NewMax 通常**不暴露** `dsh` 可执行文件（作者环境经核对：该路径不存在，`~/.newmax/bin` 下只有 `claude.exe`）。 属于这种情况时，请用「方式一」或下面的「手动安装」。
 
 安装后**重启**对应的 `dsh` 进程（插件随 profile 启动加载）。
 
 ### 手动安装（没有 `dsh` CLI 时）
 
-编辑目标 profile 目录 `$DSH_HOME/profiles/<profile>/`（Windows 下通常是
-`C:\Users\<你>\.dsh\profiles\web\` 或 `...\desktop\`）：
+编辑目标 profile 目录 `$DSH_HOME/profiles/<profile>/`（Windows 下通常是 `C:\Users\<你>\.dsh\profiles\web\` 或 `...\desktop\`）：
 
-1. 在 `package.json` 中登记依赖与 bundle：
+1. 在 `package.json` 中登记依赖与 bundle（**正式版，从 npm 取包**）：
 
    ```json
    {
-     "dependencies": { "dsh-plugin-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
+     "dependencies": { "dsh-plugin-aiquestion": "^1.0.0" },
      "dsh": { "profile": { "bundles": ["dsh-plugin-aiquestion"] } }
    }
    ```
+
+   > 若你在**本机开发调试**插件本身，改为指向你的仓库目录：
+   > `"dsh-plugin-aiquestion": "link:E:/dsh/dsh/AiQuestion"`
 
 2. 或在同目录的 `cordis.patch.yml` 中直接挂载：
 
@@ -141,12 +138,9 @@ dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
 3. 让 profile 的包管理器安装依赖（目录内自带 `pnpm-lock.yaml` / `pnpm-workspace.yaml`，
    通常是 `pnpm install`），然后重启宿主应用。
 
-> 手动安装细节随发行版而异；本项目在打包版 NewMax 上**未做端到端加载验证**，
-> 上述步骤均按标准 DSH profile 结构给出。
+> 手动安装细节随发行版而异；本项目在打包版 NewMax 上**未做端到端加载验证**， 上述步骤均按标准 DSH profile 结构给出。
 
-> 旁路请求需要一个 OpenAI 兼容端点。默认使用 `https://api.deepseek.com` + `deepseek-chat`，
-> API key 从 DSH 凭据服务的 `DEEPSEEK_API_KEY`（或同名环境变量）读取；也可在配置里改 `provider`。
-> 若宿主暴露了可用的 LLM 服务，插件会优先复用它。
+> 旁路请求需要一个 OpenAI 兼容端点。默认使用 `https://api.deepseek.com` + `deepseek-chat`， API key 从 DSH 凭据服务的 `DEEPSEEK_API_KEY`（或同名环境变量）读取；也可在配置里改 `provider`。 若宿主暴露了可用的 LLM 服务，插件会优先复用它。
 
 ---
 
@@ -158,14 +152,16 @@ dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
 
 ### 设置面板
 
-| 项 | 说明 |
-| --- | --- |
-| **启用 AiQuestion** | 总开关。关闭后不评估、不拦截，**零 token 消耗**。 |
-| **触发模式** | `智能`（默认，仅意图含糊或工作量大时澄清）/ `总是`（每轮先澄清）/ `关闭`。 |
-| **工作量阈值** | 1-10，预估工作量 ≥ 该值才触发澄清。调低更啰嗦，调高更省 token。 |
-| **最多追问轮数** | 0-5，超过则 AI 自行决断并开工。 |
-| **提问风格** | `冷静工程师` / `毒舌评审` / `耐心导师`，点击即切换。 |
-| 状态预览 | 显示**最近一次**动作（放行 / 提问 / 生成契约）与裁决结论。 |
+
+| 项                 | 说明                                         |
+| ----------------- | ------------------------------------------ |
+| **启用 AiQuestion** | 总开关。关闭后不评估、不拦截，**零 token 消耗**。             |
+| **触发模式**          | `智能`（默认，仅意图含糊或工作量大时澄清）/ `总是`（每轮先澄清）/ `关闭`。 |
+| **工作量阈值**         | 1-10，预估工作量 ≥ 该值才触发澄清。调低更啰嗦，调高更省 token。     |
+| **最多追问轮数**        | 0-5，超过则 AI 自行决断并开工。                        |
+| **提问风格**          | `冷静工程师` / `毒舌评审` / `耐心导师`，点击即切换。           |
+| 状态预览              | 显示**最近一次**动作（放行 / 提问 / 生成契约）与裁决结论。         |
+
 
 所有设置即时保存，无需重启（配置文件：`$DSH_HOME/dsh-plugin-aiquestion/config.json`）。
 
@@ -179,22 +175,19 @@ dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
 - `talking/sassy.txt` —— 毒舌评审
 - `talking/mentor.txt` —— 耐心导师
 
-插件首次启动时会把这些文件**自动复制到 `$DSH_HOME/talking/`**（如 `C:\Users\<你>\.dsh\talking\`）。
-之后插件**优先读取该目录下的版本**——直接编辑即可自定义，无需碰 `node_modules`，改完立刻生效。
+插件首次启动时会把这些文件**自动复制到** `$DSH_HOME/talking/`（如 `C:\Users\<你>\.dsh\talking\`）。 之后插件**优先读取该目录下的版本**——直接编辑即可自定义，无需碰 `node_modules`，改完立刻生效。
 
 ---
 
 ## ⚠️ 会话事件契约（重要）
 
-AiQuestion 与 [AIQuit](https://github.com/Jia-HuaWu/AIQuit) 一样，会在拒绝本轮时向会话写入
-一条 **assistant/message**（AI 的提问）。该事件必须逐字节满足 DSH 的会话事件契约：
+AiQuestion 与 [AIQuit](https://github.com/Jia-HuaWu/AIQuit) 一样，会在拒绝本轮时向会话写入 一条 **assistant/message**（AI 的提问）。该事件必须逐字节满足 DSH 的会话事件契约：
 
 1. `assistant/message` 必须携带数值 `turn` / `step`、被 `step/start` 包裹，且 `message.content` 为数组；
 2. 事件 `data` 必须带 `stream` 数组（无模型流时写 `[]`）；
 3. 拒绝统一返回官方的 `{ kind: 'reject' }`。
 
-写入前本插件会做**完整形状校验**，任一不满足即 **fail-open 放行**——**宁可不澄清，也绝不写坏事件**。
-这些约束来自 AIQuit 作者记录的惨痛教训，特此致谢（见 [NOTICE](NOTICE)）。
+写入前本插件会做**完整形状校验**，任一不满足即 **fail-open 放行**——**宁可不澄清，也绝不写坏事件**。 这些约束来自 AIQuit 作者记录的惨痛教训，特此致谢（见 [NOTICE](NOTICE)）。
 
 ---
 
@@ -216,14 +209,14 @@ node test/run.mjs        # 或 npm test
 npm run release
 ```
 
-- **自检**校验：包名、`dsh.bundle.patch` 指向的文件、`cordis.patch.yml` 里 entry 的 `name`
-  是否等于包名（不等会让市场判定「插件没有入口」）、`main` 入口、`files` 清单，并跑一遍单测。
-  只想自检不动发布：`npm run preflight`。
-- **官方源**：本机 `~/.npmrc` 若指向 `registry.npmmirror.com`（只读镜像），发布必然失败；
-  脚本已固定使用 `https://registry.npmjs.org/`，你不需要改任何配置。
+- **自检**校验：包名、`dsh.bundle.patch` 指向的文件、`cordis.patch.yml` 里 entry 的 `name` 是否等于包名（不等会让市场判定「插件没有入口」）、`main` 入口、`files` 清单，并跑一遍单测。 只想自检不动发布：`npm run preflight`。
+- **官方源**：本机 `~/.npmrc` 若指向 `registry.npmmirror.com`（只读镜像），发布必然失败； 脚本已固定使用 `https://registry.npmjs.org/`，你不需要改任何配置。
 - **未登录**时脚本会打印逐步指引（注册 → `npm login` → 重跑），而不是丢一个 `ENEEDAUTH`。
 
 发布完成后，任何人（包括你）都能在 DSH 的插件安装入口填入 `dsh-plugin-aiquestion` 直接安装。
+
+> 本包**当前已上线**：`dsh-plugin-aiquestion@1.0.0`（用 `npm view dsh-plugin-aiquestion version` 可核实）。
+> 发新版本时，把 `package.json` 的 `version` 递增后重跑 `npm run release` 即可。
 
 ---
 
@@ -252,17 +245,11 @@ AiQuestion/
 
 ## 致谢与署名
 
-本项目是**原创实现**，在设计上参考了以下两个开源的 DSH 插件，作者与出处如下：
+本项目是**原创（可能？）实现**，在设计上参考了以下两个开源的 DSH 插件，作者与出处如下：
 
-- **[AIQuit「爷不干了」](https://github.com/Jia-HuaWu/AIQuit)** — 作者 [**Jia-HuaWu**](https://github.com/Jia-HuaWu)（MIT）。
-  借鉴其**程序化裁决**模式：在 `agent/pre-step` 拦截每轮输入、用极小无历史的旁路请求做决策、
-  以完全符合契约的事件流拒绝本轮而主模型零调用；其记录的**会话事件契约**教训与
-  可拖动齿轮设置面板的可交互形态也直接启发了本项目。
-  *AIQuit 是本项目的反面镜像：它拒绝干活，AiQuestion 则在干活前先问清楚。*
-
-- **[dsh-ops](https://github.com/T-Auto/dsh-ops)** — 作者 [**T-Auto**](https://github.com/T-Auto)（MIT AND Apache-2.0）。
-  借鉴其**节约 token 的工程哲学**与 DSH 插件打包形态：组件开关、**零固定成本的提示词基线**、
-  大量使用廉价的旁路请求，以及“真正省 token（避免返工，而非单纯缩短输出）”的原则。
+- **[AIQuit「爷不干了」](https://github.com/Jia-HuaWu/AIQuit)** — 作者 **[Jia-HuaWu](https://github.com/Jia-HuaWu)**（MIT）。 借鉴其**程序化裁决**模式：在 `agent/pre-step` 拦截每轮输入、用极小无历史的旁路请求做决策、 以完全符合契约的事件流拒绝本轮而主模型零调用；其记录的**会话事件契约**教训与 可拖动齿轮设置面板的可交互形态也直接启发了本项目。 *AIQuit 是本项目的反面镜像：它拒绝干活，AiQuestion 则在干活前先问清楚。*
+- **[dsh-ops](https://github.com/T-Auto/dsh-ops)** — 作者 **[T-Auto](https://github.com/T-Auto)**（MIT AND Apache-2.0）。 借鉴其**节约 token 的工程哲学**与 DSH 插件打包形态：组件开关、**零固定成本的提示词基线**、 大量使用廉价的旁路请求，以及“真正省 token（避免返工，而非单纯缩短输出）”的原则。
+- 时*民 我的好兄弟，因为他我才意识到许愿编程的严重性，于是我决定给他挂这。
 
 详见 [NOTICE](NOTICE)。本项目未逐字拷贝上述项目的源码；如二次分发，请保留 NOTICE 以维持对原作者的署名。
 

@@ -1,5 +1,8 @@
 # AiQuestion — ask before you build
 
+[![npm version](https://img.shields.io/npm/v/dsh-plugin-aiquestion.svg?color=blue)](https://www.npmjs.com/package/dsh-plugin-aiquestion)
+[![license](https://img.shields.io/npm/l/dsh-plugin-aiquestion.svg)](LICENSE)
+
 [中文](README.md) | **English**
 
 > A DSH (DeepSeek Harness) plugin. When you throw a vague sentence at your AI,
@@ -91,8 +94,11 @@ Enter `dsh-plugin-aiquestion` in the host's plugin-install field. The installer 
 package from npm and records it in the profile's `dsh.profile.bundles`; restart to load it.
 No clone, no local path.
 
-> Requires the package to be **published to npm**. The repo ships a release helper
-> (`npm run release`) — see "Publishing to npm" below.
+> ✅ The package **is published on npm**: `dsh-plugin-aiquestion@1.0.0` (MIT)
+> — <https://www.npmjs.com/package/dsh-plugin-aiquestion>
+>
+> The repo ships a release helper (`npm run release`: preflight → login check → publish) —
+> see "Publishing to npm" below.
 
 ### Option 2 — command line
 
@@ -126,14 +132,17 @@ Restart the corresponding `dsh` process afterwards.
 
 Edit the target profile at `$DSH_HOME/profiles/<profile>/`:
 
-1. Register the dependency and bundle in `package.json`:
+1. Register the dependency and bundle in `package.json` (**release build, resolved from npm**):
 
    ```json
    {
-     "dependencies": { "dsh-plugin-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
+     "dependencies": { "dsh-plugin-aiquestion": "^1.0.0" },
      "dsh": { "profile": { "bundles": ["dsh-plugin-aiquestion"] } }
    }
    ```
+
+   > When developing the plugin **locally**, point it at your working copy instead:
+   > `"dsh-plugin-aiquestion": "link:E:/dsh/dsh/AiQuestion"` (use your own path).
 
 2. Or mount it directly in that directory's `cordis.patch.yml`:
 
@@ -215,6 +224,10 @@ npm run release
 
 Once published, anyone can install it by typing `dsh-plugin-aiquestion` into a DSH
 plugin-install field.
+
+> The package is **live on npm now**: `dsh-plugin-aiquestion@1.0.0`
+> (verify with `npm view dsh-plugin-aiquestion version`). To ship a new version, bump
+> `version` in `package.json` and re-run `npm run release`.
 
 ---
 
