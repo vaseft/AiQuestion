@@ -1,0 +1,4 @@
+# 统一行尾，保证跨平台一致
+* text=auto eol=lf
+*.png binary
+*.ico binary

@@ -1,0 +1,37 @@
+AiQuestion
+Copyright (c) 2026 vaseft (AiQuestion contributors)
+Licensed under the MIT License. See LICENSE.
+
+This project is an original work that was designed after studying two
+open-source DeepSeek Harness (DSH) plugins. Their authors and projects are
+credited below. No source code was copied verbatim; the mechanism and the
+DSH plugin contracts were re-implemented for a different purpose.
+
+--------------------------------------------------------------------------------
+1) AIQuit「爷不干了」 — https://github.com/Jia-HuaWu/AIQuit
+   Author: Jia-HuaWu (https://github.com/Jia-HuaWu)
+   License: MIT
+   Influence: the "programmatic adjudication" pattern — intercepting each user
+   turn in the `agent/pre-step` waterfall, running a tiny history-free side
+   request to make a decision, and refusing the turn by writing a fully
+   contract-compliant step lifecycle while the main model is never invoked.
+   The session-event contract constraints (turn/step, message.content, and the
+   mandatory `stream` array) in AiQuestion follow the hard-won lessons
+   documented by AIQuit, and its draggable gear + settings panel layout is the
+   direct model for the AiQuestion settings widget.
+   AIQuit is the inverse counterpart of this project: it refuses work, while
+   AiQuestion clarifies intent before work begins.
+
+2) dsh-ops — https://github.com/T-Auto/dsh-ops
+   Author: T-Auto (https://github.com/T-Auto)
+   License: MIT AND Apache-2.0 (plugin source MIT; vendored FastCtx Apache-2.0)
+   Influence: the token-efficiency philosophy and DSH plugin packaging —
+   component toggles, a zero fixed-cost prompt baseline, aggressive use of
+   cheap side requests, and the principle of "real" token savings (avoid
+   rework rather than merely shorten output). AiQuestion adopts that spirit for
+   intent clarification and mirrors the manifest/bundle layout
+   (package.json `dsh.bundle.patch` + cordis.patch.yml) shown by dsh-ops.
+
+Both upstream projects are also DSH plugins, and AiQuestion is an independent,
+original project. If you redistribute AiQuestion, keep this NOTICE so the
+original authors remain credited.

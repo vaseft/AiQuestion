@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/T-Auto/dsh-std/8a15541117cb3c13ddb8f2468308691b6051d162/packages/manifest/schema/dsh-plugin-0.15.schema.json",
+  "manifestVersion": "0.15",
+  "id": "dsh-aiquestion",
+  "name": "AiQuestion",
+  "version": "1.0.0",
+  "license": "MIT",
+  "facets": {
+    "host": {
+      "entry": "lib/index.js",
+      "apiVersion": "v1alpha1"
+    }
+  },
+  "contributes": {
+    "x-display": [
+      {
+        "icon": "./icon.svg",
+        "title": "AiQuestion",
+        "description": "Ask before you build: gates high-token work behind programmatic clarification questions and adjudicates the user's answers with the AI's own judgement"
+      }
+    ]
+  },
+  "subscriptions": []
+}
