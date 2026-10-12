@@ -96,11 +96,11 @@ test('talking：三个话术库至少各一条', () => {
 })
 
 test('插件导出：name/inject/apply 齐备且 widget 非空', () => {
-  assert.equal(plugin.name, 'dsh-aiquestion')
+  assert.equal(plugin.name, 'dsh-plugin-aiquestion')
   assert.ok(Array.isArray(plugin.inject))
   assert.ok(plugin.inject.includes('webServer'))
   assert.equal(typeof plugin.apply, 'function')
   assert.ok(WIDGET_JS.length > 1000)
   assert.match(WIDGET_JS, /__dshAiQuestion/)
-  assert.match(WIDGET_JS, /dsh-aiquestion\/config.json/)
+  assert.match(WIDGET_JS, /dsh-plugin-aiquestion\/config.json/)
 })

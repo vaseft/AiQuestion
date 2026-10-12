@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/T-Auto/dsh-std/8a15541117cb3c13ddb8f2468308691b6051d162/packages/manifest/schema/dsh-plugin-0.15.schema.json",
   "manifestVersion": "0.15",
-  "id": "dsh-aiquestion",
+  "id": "dsh-plugin-aiquestion",
   "name": "AiQuestion",
   "version": "1.0.0",
   "license": "MIT",

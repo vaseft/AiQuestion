@@ -1,5 +1,5 @@
 # ============================================================================
-# dsh-aiquestion —— AiQuestion「先问清楚再动手」DSH bundle patch
+# dsh-plugin-aiquestion —— AiQuestion「先问清楚再动手」DSH bundle patch
 # ============================================================================
 # 插件的“挂载声明”。DSH 启动时按 bundle 层栈叠加各插件 patch，
 # 本文件把 AiQuestion 插件插入目标 profile 的配置树。
@@ -7,12 +7,12 @@
 # 安装方式（本地开发）：
 #   dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
 # 或发布后：
-#   dsh plugin --profile web add dsh-aiquestion
+#   dsh plugin --profile web add dsh-plugin-aiquestion
 #
 # 桌面端（NewMax / DeepSeek Harness Desktop）请使用应用自带的 CLI 入口，
 # 详见 README 的“安装”一节。
 # ============================================================================
 
 - insert:
-    - id: dsh-aiquestion
-      name: dsh-aiquestion
+    - id: dsh-plugin-aiquestion
+      name: dsh-plugin-aiquestion

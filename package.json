@@ -1,11 +1,13 @@
 {
-  "name": "dsh-aiquestion",
+  "name": "dsh-plugin-aiquestion",
   "version": "1.0.0",
   "description": "AiQuestion「先问清楚再动手」—— DSH 意图澄清插件：在 AI 花费大 token 开工前，程序化发起澄清提问，并以 AI 自身判断为优先裁决用户回答是否合理、是否有参考意义，直到彻底理解用户意图后再放行主模型",
   "keywords": [
     "dsh",
     "dsh-plugin",
+    "dsh-plugin-aiquestion",
     "deepseek-harness",
+    "cordis",
     "aiquestion",
     "intent",
     "clarify",
@@ -13,10 +15,14 @@
     "token-saving"
   ],
   "type": "module",
-  "main": "lib/index.js",
-  "scripts": {
-    "test": "node test/run.mjs"
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./dsh-plugin.json": "./dsh-plugin.json",
+    "./package.json": "./package.json"
   },
+  "icon": "./icon.svg",
   "files": [
     "lib",
     "talking",
@@ -33,5 +39,27 @@
       "patch": "./cordis.patch.yml"
     }
   },
-  "license": "MIT"
+  "engines": {
+    "node": ">=22"
+  },
+  "author": "vaseft",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaseft/AiQuestion.git"
+  },
+  "homepage": "https://github.com/vaseft/AiQuestion#readme",
+  "bugs": {
+    "url": "https://github.com/vaseft/AiQuestion/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "test": "node test/run.mjs",
+    "preflight": "node release.mjs --check",
+    "release": "node release.mjs",
+    "prepublishOnly": "node release.mjs --check"
+  }
 }

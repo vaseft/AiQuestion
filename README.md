@@ -76,27 +76,43 @@ AiQuestion 的省 token 不是“少说话”，而是**不在误解上烧钱**�
 
 ## 安装
 
-AiQuestion 是一个标准 DSH 插件（`package.json` 的 `dsh.bundle.patch` + `cordis.patch.yml`）。
+AiQuestion 是一个标准 DSH 插件：`package.json` 的 `dsh.bundle.patch` 指向 `cordis.patch.yml`，
+bundle entry 的 `name` 就是 **npm 包名**。任何标准的 DSH 插件安装入口，填入下面这一行即可安装：
 
-**本地开发 / link 安装：**
+```
+dsh-plugin-aiquestion
+```
+
+### 方式一：在 DSH / NewMax 里填 npm 包名（推荐）
+
+在宿主的插件安装入口填入 `dsh-plugin-aiquestion`。安装器会从 npm 拉取本包，并写入当前 profile
+的 `dsh.profile.bundles`，重启后生效——不需要 clone 仓库，也不需要本地路径。
+
+> 前提：本包**已发布到 npm**。仓库自带发布助手 `npm run release`，见文末「发布到 npm」。
+
+### 方式二：命令行
+
+```sh
+dsh plugin --profile web add dsh-plugin-aiquestion
+```
+
+### 方式三：本地 link（开发调试用）
 
 ```sh
 dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
-# 或发布到 npm 后：
-dsh plugin --profile web add dsh-aiquestion
 ```
 
-桌面端（NewMax / DeepSeek Harness Desktop）使用应用自带的 CLI，通用布局为
-`<安装目录>/resources/runtime/cli/bin/dsh.cmd`：
+### 桌面端（NewMax / DeepSeek Harness Desktop）
+
+桌面版若带独立 CLI，通用布局为 `<安装目录>/resources/runtime/cli/bin/dsh.cmd`：
 
 ```sh
-"<安装目录>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add link:E:/dsh/dsh/AiQuestion
+"<安装目录>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add dsh-plugin-aiquestion
 ```
 
-> ⚠️ 该路径是 DSH 桌面版的**通用布局，并非所有发行版都带独立 CLI**。例如打包版
-> NewMax 通常**不暴露** `dsh` 可执行文件（本仓库作者环境经核对：该路径不存在，
-> `~/.newmax/bin` 下只有 `claude.exe`）。如果这条路径在你机器上不存在，请改用下面的
-> 「手动安装」。
+> ⚠️ 该路径是**通用布局，并非所有发行版都带独立 CLI**。打包版 NewMax 通常**不暴露**
+> `dsh` 可执行文件（作者环境经核对：该路径不存在，`~/.newmax/bin` 下只有 `claude.exe`）。
+> 属于这种情况时，请用「方式一」或下面的「手动安装」。
 
 安装后**重启**对应的 `dsh` 进程（插件随 profile 启动加载）。
 
@@ -109,8 +125,8 @@ dsh plugin --profile web add dsh-aiquestion
 
    ```json
    {
-     "dependencies": { "dsh-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
-     "dsh": { "profile": { "bundles": ["dsh-aiquestion"] } }
+     "dependencies": { "dsh-plugin-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
+     "dsh": { "profile": { "bundles": ["dsh-plugin-aiquestion"] } }
    }
    ```
 
@@ -118,8 +134,8 @@ dsh plugin --profile web add dsh-aiquestion
 
    ```yaml
    - insert:
-       - id: dsh-aiquestion
-         name: dsh-aiquestion
+       - id: dsh-plugin-aiquestion
+         name: dsh-plugin-aiquestion
    ```
 
 3. 让 profile 的包管理器安装依赖（目录内自带 `pnpm-lock.yaml` / `pnpm-workspace.yaml`，
@@ -151,7 +167,7 @@ dsh plugin --profile web add dsh-aiquestion
 | **提问风格** | `冷静工程师` / `毒舌评审` / `耐心导师`，点击即切换。 |
 | 状态预览 | 显示**最近一次**动作（放行 / 提问 / 生成契约）与裁决结论。 |
 
-所有设置即时保存，无需重启（配置文件：`$DSH_HOME/dsh-aiquestion/config.json`）。
+所有设置即时保存，无需重启（配置文件：`$DSH_HOME/dsh-plugin-aiquestion/config.json`）。
 
 ---
 
@@ -192,6 +208,25 @@ node test/run.mjs        # 或 npm test
 
 ---
 
+## 发布到 npm（维护者）
+
+发布走仓库自带的助手 `release.mjs`：**发布前自检 → 检查登录 → 发布到官方源**。
+
+```sh
+npm run release
+```
+
+- **自检**校验：包名、`dsh.bundle.patch` 指向的文件、`cordis.patch.yml` 里 entry 的 `name`
+  是否等于包名（不等会让市场判定「插件没有入口」）、`main` 入口、`files` 清单，并跑一遍单测。
+  只想自检不动发布：`npm run preflight`。
+- **官方源**：本机 `~/.npmrc` 若指向 `registry.npmmirror.com`（只读镜像），发布必然失败；
+  脚本已固定使用 `https://registry.npmjs.org/`，你不需要改任何配置。
+- **未登录**时脚本会打印逐步指引（注册 → `npm login` → 重跑），而不是丢一个 `ENEEDAUTH`。
+
+发布完成后，任何人（包括你）都能在 DSH 的插件安装入口填入 `dsh-plugin-aiquestion` 直接安装。
+
+---
+
 ## 目录结构
 
 ```
@@ -207,8 +242,9 @@ AiQuestion/
 │   └── widget.js        # 可拖动齿轮 + 设置面板（前端脚本）
 ├── talking/             # 提问话术（engineer / sassy / mentor）
 ├── test/                # node:test 自测
-├── cordis.patch.yml     # DSH bundle patch（挂载声明）
-├── dsh-plugin.json      # DSH 插件清单
+├── cordis.patch.yml     # DSH bundle patch（挂载声明，entry name = npm 包名）
+├── dsh-plugin.json      # T-Auto/dsh-std 谱系清单（本机 DSH 加载器不读它，保留仅为兼容）
+├── release.mjs          # 发布助手：自检 → 登录检查 → npm publish
 └── package.json
 ```
 

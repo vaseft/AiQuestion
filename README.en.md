@@ -77,27 +77,48 @@ tokens on misunderstandings**:
 
 ## Install
 
-AiQuestion is a standard DSH plugin (`dsh.bundle.patch` in `package.json` +
-`cordis.patch.yml`).
+AiQuestion is a standard DSH plugin: `package.json`'s `dsh.bundle.patch` points at
+`cordis.patch.yml`, and the bundle entry's `name` **is the npm package name**. Any standard
+DSH plugin-install entry accepts that name directly:
+
+```
+dsh-plugin-aiquestion
+```
+
+### Option 1 — paste the npm name in DSH / NewMax (recommended)
+
+Enter `dsh-plugin-aiquestion` in the host's plugin-install field. The installer pulls the
+package from npm and records it in the profile's `dsh.profile.bundles`; restart to load it.
+No clone, no local path.
+
+> Requires the package to be **published to npm**. The repo ships a release helper
+> (`npm run release`) — see "Publishing to npm" below.
+
+### Option 2 — command line
+
+```sh
+dsh plugin --profile web add dsh-plugin-aiquestion
+```
+
+### Option 3 — local link (development)
 
 ```sh
 dsh plugin --profile web add link:E:/dsh/dsh/AiQuestion
-# or, once published to npm:
-dsh plugin --profile web add dsh-aiquestion
 ```
 
-Desktop (NewMax / DeepSeek Harness Desktop) uses the app's bundled CLI. Its usual
-layout is `<install>/resources/runtime/cli/bin/dsh.cmd`:
+### Desktop (NewMax / DeepSeek Harness Desktop)
+
+If the desktop build ships a standalone CLI, the generic layout is
+`<install>/resources/runtime/cli/bin/dsh.cmd`:
 
 ```sh
-"<install>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add link:E:/dsh/dsh/AiQuestion
+"<install>/resources/runtime/cli/bin/dsh.cmd" plugin --profile desktop add dsh-plugin-aiquestion
 ```
 
-> ⚠️ That path follows the **generic** DSH desktop layout and **not every
-> distribution ships a standalone CLI** — packaged NewMax, for instance, usually
-> exposes no `dsh` executable (verified on the author's machine: the path does not
-> exist; `~/.newmax/bin` holds only `claude.exe`). If it is absent on yours, use the
-> manual install below.
+> ⚠️ That path follows the **generic** desktop layout and **not every distribution ships
+> a standalone CLI** — packaged NewMax, for instance, usually exposes no `dsh` executable
+> (verified on the author's machine: the path does not exist; `~/.newmax/bin` holds only
+> `claude.exe`). If so, use Option 1 or the manual install below.
 
 Restart the corresponding `dsh` process afterwards.
 
@@ -109,8 +130,8 @@ Edit the target profile at `$DSH_HOME/profiles/<profile>/`:
 
    ```json
    {
-     "dependencies": { "dsh-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
-     "dsh": { "profile": { "bundles": ["dsh-aiquestion"] } }
+     "dependencies": { "dsh-plugin-aiquestion": "link:E:/dsh/dsh/AiQuestion" },
+     "dsh": { "profile": { "bundles": ["dsh-plugin-aiquestion"] } }
    }
    ```
 
@@ -118,8 +139,8 @@ Edit the target profile at `$DSH_HOME/profiles/<profile>/`:
 
    ```yaml
    - insert:
-       - id: dsh-aiquestion
-         name: dsh-aiquestion
+       - id: dsh-plugin-aiquestion
+         name: dsh-plugin-aiquestion
    ```
 
 3. Install dependencies with the profile's package manager (a `pnpm-lock.yaml` ships
@@ -141,7 +162,7 @@ Edit the target profile at `$DSH_HOME/profiles/<profile>/`:
 2. Give the AI something vague (“make me a fun little tool”) and watch it bounce questions back.
 3. Answer it. If you brush it off, it will **follow up anyway** or **decide for you**.
 
-Settings (persisted to `$DSH_HOME/dsh-aiquestion/config.json`, applied instantly):
+Settings (persisted to `$DSH_HOME/dsh-plugin-aiquestion/config.json`, applied instantly):
 enable toggle, trigger mode (`auto` / `always` / `never`), workload threshold,
 max follow-up rounds, question style (engineer / sassy / mentor), and a status preview.
 
@@ -172,6 +193,28 @@ session*. These constraints come from lessons documented by the AIQuit author
 ```sh
 node test/run.mjs        # or: npm test
 ```
+
+---
+
+## Publishing to npm (maintainers)
+
+`release.mjs` does three things: **preflight → login check → publish to the official registry**.
+
+```sh
+npm run release
+```
+
+- **Preflight** verifies the package name, the file `dsh.bundle.patch` points to, that the
+  `cordis.patch.yml` entry `name` equals the package name (a mismatch makes the market report
+  "no bundle patch"), the `main` entry and the `files` list, then runs the unit tests.
+  Preflight only: `npm run preflight`.
+- **Official registry**: if your `~/.npmrc` points at `registry.npmmirror.com` (a read-only
+  mirror), publishing cannot succeed; the script pins `https://registry.npmjs.org/` for you.
+- **Not logged in**: the script prints step-by-step instructions (sign up → `npm login` →
+  re-run) instead of a bare `ENEEDAUTH`.
+
+Once published, anyone can install it by typing `dsh-plugin-aiquestion` into a DSH
+plugin-install field.
 
 ---
 
