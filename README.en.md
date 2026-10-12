@@ -94,7 +94,7 @@ Enter `dsh-plugin-aiquestion` in the host's plugin-install field. The installer 
 package from npm and records it in the profile's `dsh.profile.bundles`; restart to load it.
 No clone, no local path.
 
-> ✅ The package **is published on npm**: `dsh-plugin-aiquestion@1.0.0` (MIT)
+> ✅ The package **is published on npm**: `dsh-plugin-aiquestion` (MIT)
 > — <https://www.npmjs.com/package/dsh-plugin-aiquestion>
 >
 > The repo ships a release helper (`npm run release`: preflight → login check → publish) —
@@ -225,7 +225,7 @@ npm run release
 Once published, anyone can install it by typing `dsh-plugin-aiquestion` into a DSH
 plugin-install field.
 
-> The package is **live on npm now**: `dsh-plugin-aiquestion@1.0.0`
+> The package is **live on npm now** (latest version shown by the badge above)
 > (verify with `npm view dsh-plugin-aiquestion version`). To ship a new version, bump
 > `version` in `package.json` and re-run `npm run release`.
 

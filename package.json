@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-aiquestion",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AiQuestion「先问清楚再动手」—— DSH 意图澄清插件：在 AI 花费大 token 开工前，程序化发起澄清提问，并以 AI 自身判断为优先裁决用户回答是否合理、是否有参考意义，直到彻底理解用户意图后再放行主模型",
   "keywords": [
     "dsh",

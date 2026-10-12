@@ -82,7 +82,7 @@ dsh-plugin-aiquestion
 
 在宿主的插件安装入口填入 `dsh-plugin-aiquestion`。安装器会从 npm 拉取本包，并写入当前 profile 的 `dsh.profile.bundles`，重启后生效——不需要 clone 仓库，也不需要本地路径。
 
-> ✅ 本包**已发布到 npm**：`dsh-plugin-aiquestion@1.0.0`（MIT）
+> ✅ 本包**已发布到 npm**：`dsh-plugin-aiquestion`（MIT）
 > — <https://www.npmjs.com/package/dsh-plugin-aiquestion>
 >
 > 仓库自带发布助手 `npm run release`（自检 → 登录检查 → 发布），见文末「发布到 npm」。
@@ -215,7 +215,7 @@ npm run release
 
 发布完成后，任何人（包括你）都能在 DSH 的插件安装入口填入 `dsh-plugin-aiquestion` 直接安装。
 
-> 本包**当前已上线**：`dsh-plugin-aiquestion@1.0.0`（用 `npm view dsh-plugin-aiquestion version` 可核实）。
+> 本包**当前已上线**（最新版本见顶部徽章，或用 `npm view dsh-plugin-aiquestion version` 核实）。
 > 发新版本时，把 `package.json` 的 `version` 递增后重跑 `npm run release` 即可。
 
 ---
